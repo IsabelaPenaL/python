@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-0">Minhas Tarefas</h2>
+            <p class="text-muted mb-0" style="font-size: 0.9rem;">Organize seu dia em poucos cliques</p>
+        </div>
+        <a href="{{ url_for('nova_tarefa') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Nova Tarefa
+        </a>
+    </div>
+
+    <!-- ===== RESUMO DO DASHBOARD ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card card-resumo">
+                <span class="numero">{{ total }}</span>
+                <span class="rotulo">Total</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-resumo">
+                <span class="numero" style="color: var(--cor-pendente);">{{ pendentes }}</span>
+                <span class="rotulo">Pendentes</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-resumo">
+                <span class="numero" style="color: var(--cor-andamento);">{{ andamento }}</span>
+                <span class="rotulo">Em andamento</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-resumo">
+                <span class="numero" style="color: var(--cor-concluida);">{{ concluidas }}</span>
+                <span class="rotulo">Concluídas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LISTA DE TAREFAS ===== -->
+    {% if tarefas|length == 0 %}
+        <div class="card text-center py-5">
+            <i class="bi bi-clipboard-check" style="font-size: 2.2rem; opacity: 0.4;"></i>
+            <p class="text-muted mt-2 mb-0">Você ainda não tem tarefas. Que tal criar a primeira?</p>
+        </div>
+    {% endif %}
+
+    <div class="row g-3">
+        {% for tarefa in tarefas %}
+            <div class="col-md-4">
+                <div class="card card-tarefa status-{{ tarefa.status }} h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ tarefa.titulo }}</h5>
+                        </div>
+
+                        <span class="selo-status status-{{ tarefa.status }} mb-3" style="width: fit-content;">
+                            {{ tarefa.status|capitalize }}
+                        </span>
+
+                        <p class="card-text text-muted flex-grow-1">{{ tarefa.descricao }}</p>
+
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{{ url_for('editar', id_tarefa=tarefa.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="{{ url_for('excluir', id_tarefa=tarefa.id) }}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
